@@ -17,6 +17,9 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
+            "stylePreprocessorOptions": {
+              "includePaths": ["node_modules"]
+            },
             "outputPath": "dist/vot_cu_sens",
             "index": "src/index.html",
             "browser": "src/main.ts",
@@ -32,14 +35,11 @@
               }
             ],
             "styles": [
+              "src/theme.scss",
               "src/styles.scss"
             ],
             "scripts": [],
-            "server": "src/main.server.ts",
-            "outputMode": "server",
-            "ssr": {
-              "entry": "src/server.ts"
-            }
+            "server": "src/main.server.ts"
           },
           "configurations": {
             "production": {
@@ -83,6 +83,9 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
+            "stylePreprocessorOptions": {
+              "includePaths": ["node_modules"]
+            },
             "polyfills": [
               "zone.js",
               "zone.js/testing"
@@ -96,6 +99,7 @@
               }
             ],
             "styles": [
+              "src/theme.scss",
               "src/styles.scss"
             ],
             "scripts": []

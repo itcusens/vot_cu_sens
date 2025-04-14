@@ -4,6 +4,7 @@
       <div class="buttons-container">
         <button mat-raised-button color="primary" (click)="resetTable()">Reset</button>
         <button mat-raised-button color="warn" (click)="voteNullForAll()">Vote Null</button>
+        <button *ngIf="showRandomize" at-raised-button color="primary" (click)="randomizeBallot()">Randomize</button>
       </div>
 
       <div class="ballot-table-container">
@@ -53,7 +54,7 @@
 
     <div class="table-spacing"></div>
 
-    <div class="preview-container">
+    <div class="preview-container" *ngIf="showPreview">
       <h3>Ballot Preview</h3>
       <table class="preview-table">
         <tr *ngFor="let row of getBallotPreview()">

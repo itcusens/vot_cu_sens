@@ -1,0 +1,99 @@
+<div class="container">
+  <div class="title">Election Simulation</div>
+
+  <div class="form-container">
+    <mat-form-field appearance="outline" style="width: 100%;">
+      <mat-label>Number of Candidates</mat-label>
+      <input
+        matInput
+        type="number"
+        [(ngModel)]="numCandidates"
+        (ngModelChange)="onCandidateCountChange()"
+        placeholder="e.g. 5"
+      />
+    </mat-form-field>
+
+    <div class="candidate-table" *ngIf="candidateNames.length">
+      <h3>Candidate Names</h3>
+      <table class="preview-table">
+        <tr *ngFor="let name of candidateNames; let i = index; trackBy: trackByIndex">
+          <td>#{{ i + 1 }}</td>
+          <td>
+            <input
+              [ngModel]="candidateNames[i]"
+              (ngModelChange)="onCandidateNameChange(i, $event)"
+              placeholder="Enter name"
+              style="width: 100%; padding: 6px;"
+            />
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <mat-form-field appearance="outline" style="width: 100%;">
+      <mat-label>Number of Winners</mat-label>
+      <input
+        matInput
+        type="number"
+        [(ngModel)]="numWinners"
+        placeholder="e.g. 2"
+      />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" style="width: 100%;">
+      <mat-label>Number of Voters</mat-label>
+      <input
+        matInput
+        type="number"
+        [(ngModel)]="numVoters"
+        placeholder="e.g. 10"
+      />
+    </mat-form-field>
+
+    <mat-checkbox [(ngModel)]="useRandomBallots">
+      Randomize Ballots
+    </mat-checkbox>
+
+    <div class="buttons-container">
+      <button mat-raised-button color="warn" (click)="resetAll()">Reset</button>
+      <button mat-raised-button color="primary" (click)="simulate()">Simulate</button>
+    </div>
+  </div>
+
+  <div *ngIf="!useRandomBallots" class="manual-ballots">
+    <h3 style="color: #8bc34a;">Enter Ballots</h3>
+    <div class="ballot-grid-container" *ngIf="!useRandomBallots">
+      <app-vote
+        *ngFor="let i of voterArray"
+        [allNames]="candidateNames"
+        [maxRows]="candidateNames.length"
+        [showPreview]="false"
+        [showRandomize]="true"
+        (ballotChange)="onBallotChange(i, $event)"
+      ></app-vote>
+    </div>
+  </div>
+
+  <div *ngIf="simulationResults.length > 0" class="carousel-container">
+    <h3 style="color: #8bc34a;">Simulation Rounds</h3>
+
+    <div class="buttons-container">
+      <button mat-raised-button (click)="goToPrevRound()" [disabled]="currentRound === 0">Previous</button>
+      <button mat-raised-button (click)="goToNextRound()" [disabled]="currentRound === simulationResults.length - 1">Next</button>
+    </div>
+
+    <div class="round-results">
+      <h4 style="color: white;">Round {{ currentRound + 1 }}</h4>
+      <pre style="color: #ccc;">{{ simulationResults[currentRound] | json }}</pre>
+    </div>
+  </div>
+
+  <div *ngIf="winners.length > 0" class="winner-container">
+    <h3 class="winner-title">Final Results / Winners</h3>
+    <ul>
+      <li *ngFor="let winner of winners" class="winner-item">
+        🏆 {{ winner }}
+      </li>
+    </ul>
+  </div>
+</div>
