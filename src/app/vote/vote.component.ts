@@ -116,6 +116,24 @@ export class VoteComponent {
     this.ballotChange.emit(this.selectedNames);
   }
 
+  fillTheRest() {
+    for (let i = 0; i < this.maxRows; i++) {
+      if (!this.selectedNames[i]) {
+        const used = this.selectedNames
+          .filter((val, idx) => idx !== i && val !== this.NULL_VALUE);
+        const available = this.allNames.filter(name => !used.includes(name));
+
+        if (available.length > 0) {
+          const randomName = available[Math.floor(Math.random() * available.length)];
+          this.selectedNames[i] = randomName;
+        }
+      }
+    }
+
+    this.updateAvailableNames();
+    this.ballotChange.emit(this.selectedNames);
+  }
+
   getBallotPreview() {
     return this.selectedNames.map((name, index) => ({
       number: this.maxRows - index,

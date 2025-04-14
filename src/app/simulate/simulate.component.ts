@@ -41,13 +41,13 @@ export class SimulateComponent {
   }
 
   resetCandidateNames() {
-    this.candidateNames = Array(this.numCandidates).fill('').map((_, i) => `Candidate ${i + 1}`);
+    this.candidateNames = Array(this.numCandidates).fill('').map((_, i) => `Candidat ${i + 1}`);
   }
 
   onCandidateCountChange() {
     const diff = this.numCandidates - this.candidateNames.length;
     if (diff > 0) {
-      this.candidateNames.push(...Array(diff).fill('').map((_, i) => `Candidate ${this.candidateNames.length + i + 1}`));
+      this.candidateNames.push(...Array(diff).fill('').map((_, i) => `Candidat ${this.candidateNames.length + i + 1}`));
     } else if (diff < 0) {
       this.candidateNames.splice(diff);
     }

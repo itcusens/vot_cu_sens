@@ -37,7 +37,6 @@
   background-color: #2c3e2b;
   z-index: 999;
   display: flex;
-  gap: 10px;
   justify-content: space-between;
 }
 
@@ -112,7 +111,6 @@ button {
   font-weight: 600;
   background-color: #a2da5a;
   width: 120px;
-  height: 40px;
   box-sizing: border-box;
 }
 
@@ -125,6 +123,7 @@ button.mat-raised-button.color-warn {
   background-color: #ffab40;
   color: #ffffff;
 }
+
 
 .mat-select-trigger {
   display: flex;

@@ -3,24 +3,25 @@
     <div class="form-container">
       <div class="buttons-container">
         <button mat-raised-button color="primary" (click)="resetTable()">Reset</button>
-        <button mat-raised-button color="warn" (click)="voteNullForAll()">Vote Null</button>
-        <button *ngIf="showRandomize" at-raised-button color="primary" (click)="randomizeBallot()">Randomize</button>
+        <button mat-raised-button color="warn" (click)="voteNullForAll()">Vot nul</button>
+        <button *ngIf="showRandomize" at-raised-button color="primary" (click)="randomizeBallot()">Random</button>
+        <button mat-raised-button color="accent" (click)="fillTheRest()">Random fill rest</button>
       </div>
 
       <div class="ballot-table-container">
         <table mat-table [dataSource]="tableData" class="mat-elevation-z8 ballot-table">
           <ng-container matColumnDef="value">
-            <th mat-header-cell *matHeaderCellDef> Number </th>
+            <th mat-header-cell *matHeaderCellDef> Puncte </th>
             <td mat-cell *matCellDef="let row"> {{ row.value + 1 }} </td>
           </ng-container>
 
           <ng-container matColumnDef="select">
-            <th mat-header-cell *matHeaderCellDef> Name </th>
+            <th mat-header-cell *matHeaderCellDef> Nume candidat </th>
             <td mat-cell *matCellDef="let row">
               <mat-select
                 [ngModel]="selectedNames[row.index]"
                 (ngModelChange)="onNameSelect(row.index, $event)"
-                placeholder="Select name"
+                placeholder="### Alege candidat ###"
                 disableOptionCentering
                 panelClass="custom-select-panel"
               >
@@ -55,7 +56,7 @@
     <div class="table-spacing"></div>
 
     <div class="preview-container" *ngIf="showPreview">
-      <h3>Ballot Preview</h3>
+      <h3>Previzulizare buletin de vot</h3>
       <table class="preview-table">
         <tr *ngFor="let row of getBallotPreview()">
           <td>{{ row.number + 1 }}</td>
