@@ -27,6 +27,7 @@ export class VoteComponent {
   @Input() maxRows: number = 30;
   @Input() showRandomize = true;
   @Input() showRandomFill = false;
+  @Input() ballot: (string | null)[] = [];
   @Input() allNames: string[] = [
     "John Doe", "Jane Smith", "James Johnson", "Mary Brown", "Robert White",
     "Michael Green", "Patricia Adams", "David Thompson", "Linda Harris", "William Clark",
@@ -50,6 +51,12 @@ export class VoteComponent {
   }
 
   ngOnChanges(changes: SimpleChanges) {
+    if (changes['ballot'] && changes['ballot'].currentValue) {
+      this.selectedNames = [...this.ballot];
+      this.filterTexts = Array(this.maxRows).fill('');
+      this.updateAvailableNames();
+    }
+
     if (changes['maxRows'] && !changes['maxRows'].firstChange) {
       this.initTable();
     }
@@ -175,6 +182,13 @@ export class VoteComponent {
             <title>Buletin vot</title>
             <head>
               <style>
+                @page {
+                  margin: 0;
+                }
+
+                body {
+                  margin: 2cm;
+                }
                 body {
                   font-family: 'Arial', sans-serif;
                   background-color: white;
@@ -209,8 +223,8 @@ export class VoteComponent {
                   align-items: center;
                 }
                 .qr-container img {
-                  width: 400px;
-                  height: 400px;
+                  width: 450px;
+                  height: 450px;
                 }
               </style>
             </head>

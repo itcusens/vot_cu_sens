@@ -24,7 +24,7 @@ import { VoteComponent } from '../vote/vote.component';
 })
 export class SimulateComponent {
   numCandidates = 5;
-  numWinners = 2;
+  numWinners = 10;
   numVoters = 3;
   useRandomBallots = false;
 
@@ -35,6 +35,29 @@ export class SimulateComponent {
   winners: string[] = [];
   currentRound = 0;
   NULL_VALUE = 'Null';
+  currentBallotIndex: number = 0;
+  ballotJumpInput: any;
+
+  prevBallot() {
+    if (this.currentBallotIndex > 0) {
+      this.currentBallotIndex--;
+    }
+  }
+
+  nextBallot() {
+    if (this.currentBallotIndex < this.numVoters - 1) {
+      this.currentBallotIndex++;
+    }
+  }
+
+  jumpToBallot() {
+    if (this.ballotJumpInput && this.ballotJumpInput >= 1 && this.ballotJumpInput <= this.numVoters) {
+      this.currentBallotIndex = this.ballotJumpInput - 1;
+      this.ballotJumpInput = null;
+    } else {
+      alert('Invalid ballot number!');
+    }
+  }
 
   ngOnInit() {
     this.resetCandidateNames();
@@ -54,12 +77,13 @@ export class SimulateComponent {
   }
 
   onBallotChange(index: number, ballot: (string | null)[]) {
+    console.log(index, ballot)
     this.manualBallots[index] = ballot;
   }
 
   resetAll() {
     this.numCandidates = 5;
-    this.numWinners = 2;
+    this.numWinners = 10;
     this.numVoters = 3;
     this.useRandomBallots = false;
     this.simulationResults = [];
@@ -117,13 +141,6 @@ export class SimulateComponent {
     this.numVoters = rawBallots.length;
     this.candidateNames = candidateNames;
     this.manualBallots = rawBallots;
-
-    console.log('CSV loaded successfully:',
-      this.candidateNames,
-    );
-    console.log('CSV loaded successfully:',
-      this.manualBallots[0]
-    );
   }
 
 
@@ -153,31 +170,6 @@ export class SimulateComponent {
         borda: values.borda
       }))
       .sort((a, b) => b.firsts - a.firsts || b.borda - a.borda);
-  }
-
-  getRoundExplanation(roundIndex: number): string {
-    const round = this.simulationResults[roundIndex];
-    const candidateNames = Object.keys(round);
-    const top = candidateNames.reduce((a, b) => round[a].firsts >= round[b].firsts ? a : b);
-
-    const electedThisRound = this.getElectedThisRound(roundIndex);
-    const eliminatedThisRound = this.getEliminatedThisRound(roundIndex);
-
-    let explanation = `In this round, ${top} had the most 1st-choice votes. `;
-
-    if (electedThisRound.length) {
-      explanation += `${electedThisRound.join(", ")} ${
-        electedThisRound.length === 1 ? 'was' : 'were'
-      } elected. `;
-    }
-
-    if (eliminatedThisRound.length) {
-      explanation += `${eliminatedThisRound.join(", ")} ${
-        eliminatedThisRound.length === 1 ? 'was' : 'were'
-      } eliminated due to having the lowest Borda score.`;
-    }
-
-    return explanation;
   }
 
   getElectedThisRound(roundIndex: number): string[] {
@@ -213,6 +205,7 @@ export class SimulateComponent {
       }
     }
 
+
     const { elected, rounds } = this.runStvBorda(ballots, candidates, this.numWinners);
     this.winners = elected;
     this.simulationResults = rounds;
@@ -220,116 +213,76 @@ export class SimulateComponent {
   }
 
   runStvBorda(
-    ballots: { ballot: string[], weight: number }[],
+    ballots: { ballot: string[] }[],
     candidates: string[],
     seats: number
-  ): { elected: string[], rounds: any[] } {
-    const totalVotes = ballots.reduce((sum, b) => sum + b.weight, 0);
-    const quota = Math.floor(totalVotes / (seats + 1)) + 1;
-    let elected: string[] = [];
-    let remaining = [...candidates];
+  ): { elected: string[]; rounds: any[] } {
     const rounds: any[] = [];
+    let remaining = [...candidates];
+    let workingBallots = ballots.map(b => [...b.ballot]);
 
-    function countFirstPreferences(ballots: any[], remaining: string[]) {
-      const counts: Record<string, number> = Object.fromEntries(remaining.map(candidate => [candidate, 0]));
-      for (const { ballot, weight } of ballots) {
-        const top = ballot.find((candidate:string) => remaining.includes(candidate));
-        if (top) counts[top] += weight;
+    function countFirstPreferences(ballots: string[][], remaining: string[]) {
+      const counts: Record<string, number> = Object.fromEntries(
+        remaining.map(candidate => [candidate, 0])
+      );
+
+      for (const ballot of ballots) {
+        const top = ballot.find(candidate => remaining.includes(candidate));
+        if (top) counts[top] += 1;
       }
+
       return counts;
     }
 
-    function calculateBordaScores(ballots: any[], remaining: string[]): Record<string, number> {
-      const scores: Record<string, number> = Object.fromEntries(remaining.map(candidate => [candidate, 0]));
+    function calculateBordaScores(ballots: string[][], remaining: string[]) {
+      const scores: Record<string, number> = Object.fromEntries(
+        remaining.map(candidate => [candidate, 0])
+      );
 
-      for (const { ballot, weight } of ballots) {
-        const filtered = ballot.filter((candidate: string) => remaining.includes(candidate));
+      for (const ballot of ballots) {
+        const filtered = ballot.filter(candidate => remaining.includes(candidate));
         const n = filtered.length;
 
-        filtered.forEach((candidate:number, index:number): void => {
-          scores[candidate] += weight * (n - index - 1);
+        filtered.forEach((candidate, index) => {
+          scores[candidate] += n - index - 1;
         });
       }
 
       return scores;
     }
 
-    function redistribute(ballots: any[], fromCandidate: string, surplus: number, remaining: string[]): any[] {
-      const donorBallots = ballots.filter(ballot => ballot.ballot[0] === fromCandidate);
-      const bordaSums: Record<string, number> = {};
+    while (remaining.length > seats) {
+      const firstPrefs = countFirstPreferences(workingBallots, remaining);
+      const bordaScores = calculateBordaScores(workingBallots, remaining);
 
-      for (const { ballot, weight } of donorBallots) {
-        const filtered:[] = ballot.filter((candidate: string) => candidate !== fromCandidate && remaining.includes(candidate));
-        const n:number = filtered.length;
-
-        filtered.forEach((candidate: string, index: number): void => {
-          bordaSums[candidate] = (bordaSums[candidate] || 0) + (n - index - 1) * weight;
-        });
-      }
-
-      const totalScore = Object.values(bordaSums).reduce((a, b) => a + b, 0);
-      const newBallots: any[] = [];
-
-      for (const { ballot, weight } of donorBallots) {
-        const filtered = ballot.filter((candidate:string) => candidate !== fromCandidate && remaining.includes(candidate));
-        for (const candidate of filtered) {
-          const portion = totalScore === 0 ? 1 / filtered.length : (bordaSums[candidate] || 0) / totalScore;
-          const newWeight = weight * (surplus / donorBallots.reduce((sum, b) => sum + b.weight, 0)) * portion;
-          newBallots.push({ ballot: filtered, weight: newWeight });
-        }
-      }
-
-      return newBallots;
-    }
-
-    let weightedBallots = [...ballots];
-
-    while (elected.length < seats && remaining.length > 0) {
-      if (remaining.length <= seats - elected.length) {
-        elected = elected.concat(remaining);
-        break;
-      }
-      const roundData: Record<string, { firsts: number, borda: number }> = {};
-      const firstPrefs = countFirstPreferences(weightedBallots, remaining);
-      const bordaScores = calculateBordaScores(weightedBallots, remaining);
-
+      const roundData: Record<string, { firsts: number; borda: number }> = {};
       for (const candidate of remaining) {
         roundData[candidate] = {
           firsts: firstPrefs[candidate],
           borda: bordaScores[candidate],
         };
       }
-
       rounds.push(roundData);
 
-      const newlyElected: string[] = [];
+      const minFirstVotes = Math.min(...remaining.map(c => firstPrefs[c]));
+      const toEliminate = remaining.filter(c => firstPrefs[c] === minFirstVotes);
 
-      for (const candidate of remaining) {
-        if (firstPrefs[candidate] >= quota) {
-          newlyElected.push(candidate);
-          elected.push(candidate);
-        }
-      }
-
-      if (newlyElected.length > 0) {
-        for (const c of newlyElected) {
-          const surplus = firstPrefs[c] - quota;
-          const surplusBallots = redistribute(weightedBallots, c, surplus, remaining);
-          weightedBallots = weightedBallots.filter(b => b.ballot[0] !== c).concat(surplusBallots);
-          remaining = remaining.filter(r => r !== c);
-        }
+      let eliminatedCandidate: string;
+      if (toEliminate.length === 1) {
+        eliminatedCandidate = toEliminate[0];
       } else {
-        const minBorda = Math.min(...remaining.map(c => bordaScores[c]));
-        const toEliminate = remaining.find(c => bordaScores[c] === minBorda)!;
-        weightedBallots = weightedBallots.map(b => ({
-          ballot: b.ballot.filter(c => c !== toEliminate),
-          weight: b.weight,
-        }));
-        remaining = remaining.filter(c => c !== toEliminate);
+        const bordaSubset = toEliminate.map(c => ({ c, borda: bordaScores[c] }));
+        const minBorda = Math.min(...bordaSubset.map(item => item.borda));
+        eliminatedCandidate = bordaSubset.find(item => item.borda === minBorda)!.c;
       }
+
+      remaining = remaining.filter(c => c !== eliminatedCandidate);
+      workingBallots = workingBallots.map(ballot =>
+        ballot.filter(candidate => candidate !== eliminatedCandidate)
+      );
     }
 
-    return { elected, rounds };
+    return { elected: remaining, rounds };
   }
 
 }

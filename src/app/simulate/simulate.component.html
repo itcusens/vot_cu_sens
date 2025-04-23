@@ -82,7 +82,6 @@
     <div class="round-results">
       <h4 style="color: white;">Round {{ currentRound + 1 }}</h4>
 
-      <!-- Candidate vote summary -->
       <table class="results-table">
         <thead>
           <tr>
@@ -99,11 +98,6 @@
           </tr>
         </tbody>
       </table>
-
-      <!-- Plain English Explanation -->
-      <div class="round-summary">
-        <p>{{ getRoundExplanation(currentRound) }}</p>
-      </div>
     </div>
 
     <div *ngIf="winners.length > 0" class="winner-container">
@@ -118,16 +112,39 @@
 
   <div *ngIf="!useRandomBallots" class="manual-ballots">
     <h3 style="color: #8bc34a;">Enter Ballots</h3>
-    <div class="ballot-grid-container" *ngIf="!useRandomBallots">
+
+    <div class="ballot-navigation">
+      <button mat-raised-button (click)="prevBallot()" [disabled]="currentBallotIndex === 0">Previous Ballot</button>
+
+      <span>Ballot {{ currentBallotIndex + 1 }} of {{ numVoters }}</span>
+
+      <button mat-raised-button (click)="nextBallot()" [disabled]="currentBallotIndex >= numVoters - 1">Next Ballot</button>
+
+      <div style="margin-top: 10px;">
+        <label>Jump to Ballot: </label>
+        <input
+          type="number"
+          min="1"
+          [max]="numVoters"
+          [(ngModel)]="ballotJumpInput"
+          placeholder="Ballot #"
+          style="width: 80px;"
+        />
+        <button mat-raised-button (click)="jumpToBallot()">Go</button>
+      </div>
+    </div>
+
+    <div class="ballot-grid-container">
       <app-vote
-        *ngFor="let i of voterArray"
         [allNames]="candidateNames"
         [maxRows]="candidateNames.length"
         [showPreview]="false"
         [showRandomize]="true"
-        (ballotChange)="onBallotChange(i, $event)"
+        [ballot]="manualBallots[currentBallotIndex] || []"
+        (ballotChange)="onBallotChange(currentBallotIndex, $event)"
       ></app-vote>
     </div>
   </div>
+
 
 </div>

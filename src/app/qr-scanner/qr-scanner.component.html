@@ -1,0 +1,11 @@
+<div class="scanner-container">
+  <h2>QR Code Scanner</h2>
+  <video id="videoElement" width="400" height="300"></video>
+  <div class="result" *ngIf="scanResult">
+    <strong>Scanned Result:</strong> {{ scanResult }}
+  </div>
+  <div class="error" *ngIf="errorMessage">
+    {{ errorMessage }}
+  </div>
+  <button (click)="stopScanner()">Stop Scanner</button>
+</div>

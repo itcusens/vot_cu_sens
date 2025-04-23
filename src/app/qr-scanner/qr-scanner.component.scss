@@ -1,0 +1,21 @@
+.scanner-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+video {
+  border: 2px solid #8bc34a;
+  border-radius: 8px;
+}
+
+.result {
+  color: green;
+  font-size: 1.2rem;
+}
+
+.error {
+  color: red;
+  font-size: 1rem;
+}
