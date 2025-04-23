@@ -83,30 +83,27 @@
 
 
   <div *ngIf="!useRandomBallots" class="manual-ballots">
-    <div class="ballots-config">
-      <h3 style="color: #8bc34a;">Enter Ballots</h3>
+    <h3 style="color: #8bc34a;">Ballots</h3>
 
-      <div class="ballot-navigation">
-        <div>
-          <label>Jump to Ballot: </label>
-          <input
-            type="number"
-            min="1"
-            [max]="numVoters"
-            [(ngModel)]="ballotJumpInput"
-            placeholder="Ballot #"
-            class="ballot-navigation-input"
-          />
-          <button mat-raised-button (click)="jumpToBallot()">Go</button>
-        </div>
-        <div class="ballot-buttons">
-          <button mat-raised-button (click)="prevBallot()" [disabled]="currentBallotIndex === 0">Previous Ballot</button>
+    <div class="ballot-navigation">
+      <div>
+        <label>Jump to Ballot: </label>
+        <input
+          type="number"
+          min="1"
+          [max]="numVoters"
+          [(ngModel)]="ballotJumpInput"
+          placeholder="Ballot #"
+          class="ballot-navigation-input"
+        />
+        <button mat-raised-button (click)="jumpToBallot()">Go</button>
+      </div>
+      <div class="ballot-buttons">
+        <button mat-raised-button (click)="prevBallot()" [disabled]="currentBallotIndex === 0">Previous Ballot</button>
 
-          <span>Ballot {{ currentBallotIndex + 1 }} of {{ numVoters }}</span>
+        <span>Ballot {{ currentBallotIndex + 1 }} of {{ numVoters }}</span>
 
-          <button mat-raised-button (click)="nextBallot()" [disabled]="currentBallotIndex >= numVoters - 1">Next Ballot</button>
-        </div>
-
+        <button mat-raised-button (click)="nextBallot()" [disabled]="currentBallotIndex >= numVoters - 1">Next Ballot</button>
       </div>
     </div>
 
@@ -119,6 +116,27 @@
         [ballot]="manualBallots[currentBallotIndex]"
         (ballotChange)="onBallotChange(currentBallotIndex, $event)"
       ></app-vote>
+    </div>
+    <div class="ballot-navigation">
+      <div>
+        <label>Jump to Ballot: </label>
+        <input
+          type="number"
+          min="1"
+          [max]="numVoters"
+          [(ngModel)]="ballotJumpInput"
+          placeholder="Ballot #"
+          class="ballot-navigation-input"
+        />
+        <button mat-raised-button (click)="jumpToBallot()">Go</button>
+      </div>
+      <div class="ballot-buttons">
+        <button mat-raised-button (click)="prevBallot()" [disabled]="currentBallotIndex === 0">Previous Ballot</button>
+
+        <span>Ballot {{ currentBallotIndex + 1 }} of {{ numVoters }}</span>
+
+        <button mat-raised-button (click)="nextBallot()" [disabled]="currentBallotIndex >= numVoters - 1">Next Ballot</button>
+      </div>
     </div>
   </div>
 </div>

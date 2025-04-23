@@ -334,10 +334,14 @@ button.mat-raised-button.color-warn {
 .manual-ballots {
   width: 100vh;
   flex-shrink: 0;
+  padding: 20px;
+  margin-top: 20px;
+  border: 2px dashed #8bc34a;
+  border-radius: 15px;
 
   .ballot-navigation {
     color: #fff;
-    padding: 20px;
+    padding: 5px;
     align-items: center;
     background-color: #2c3e2b;
     border-radius: 8px;
