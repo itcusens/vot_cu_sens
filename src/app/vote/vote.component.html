@@ -48,6 +48,7 @@
                 >
                   {{ name }}
                 </mat-option>
+                <mat-option>✖ Resetează opțiunea ✖</mat-option>
               </mat-select>
               </td>
             </tr>
@@ -57,7 +58,7 @@
 
 
       <div class="buttons-container">
-        <button mat-raised-button color="primary" (click)="resetTable()">Reset</button>
+        <button mat-raised-button color="primary" (click)="resetTable()">Resetează</button>
         <button mat-raised-button color="warn" (click)="voteNullForAll()">Anulat</button>
         <button *ngIf="showRandomize" mat-raised-button color="primary" (click)="randomizeBallot()">Random</button>
         <button *ngIf="showRandomFill" mat-raised-button color="accent" (click)="fillTheRest()">Random fill rest</button>
@@ -85,7 +86,7 @@
       <qrcode [qrdata]="qrcode" [width]="400" [errorCorrectionLevel]="'M'"></qrcode>
     </div>
     <div class="print-button">
-      <button mat-raised-button color="primary" (click)="print()">Print</button>
+      <button mat-raised-button color="primary" (click)="print()">Printează</button>
     </div>
   </div>
 </div>
