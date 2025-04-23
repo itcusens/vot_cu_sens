@@ -98,7 +98,7 @@ export class SimulateComponent {
         const n = filtered.length;
         const position = filtered.indexOf(candidate);
         if (position === -1) return null;
-        return position;
+        return n - position;
       });
       return { candidate, scores };
     });
