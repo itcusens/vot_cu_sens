@@ -53,7 +53,6 @@ export class VoteComponent {
   ngOnChanges(changes: SimpleChanges) {
     if (changes['ballot'] && changes['ballot'].currentValue) {
       this.selectedNames = [...this.ballot];
-      console.log(this.ballot)
       this.filterTexts = Array(this.maxRows).fill('');
       this.updateAvailableNames();
     }

@@ -87,6 +87,29 @@ export class SimulateComponent {
     }
   }
 
+  getScoreMatrixForRound(roundIndex: number): { candidate: string, scores: (number | null)[] }[] {
+    const round = this.simulationResults[roundIndex];
+    const ballots = round?.ballots || [];
+    const candidateNames = Object.keys(round?.candidates || {});
+
+    return candidateNames.map(candidate => {
+      const scores = ballots.map((ballot: any) => {
+        const filtered = ballot.filter((c:string) => candidateNames.includes(c));
+        const n = filtered.length;
+        const position = filtered.indexOf(candidate);
+        if (position === -1) return null;
+        return position;
+      });
+      return { candidate, scores };
+    });
+  }
+
+  getBallotIndexesForRound(roundIndex: number): number[] {
+    const ballots = this.simulationResults[roundIndex]?.ballots || [];
+    return Array.from({ length: ballots.length }, (_, i) => i + 1);
+  }
+
+
   onBallotChange(index: number, ballot: (string | null)[]) {
     this.manualBallots[index] = ballot;
   }
@@ -173,7 +196,8 @@ export class SimulateComponent {
   }
 
   getSortedCandidatesForRound(roundIndex: number): { name: string, firsts: number, borda: number }[] {
-    const roundData = this.simulationResults[roundIndex];
+    const round = this.simulationResults[roundIndex];
+    const roundData = round?.candidates || {};
     return Object.entries(roundData)
       .map(([name, values]: any) => ({
         name,
@@ -182,6 +206,7 @@ export class SimulateComponent {
       }))
       .sort((a, b) => b.firsts - a.firsts || b.borda - a.borda);
   }
+
 
   getElectedThisRound(roundIndex: number): string[] {
     if (roundIndex === 0) return this.simulationResults[roundIndex].elected || [];
@@ -273,7 +298,10 @@ export class SimulateComponent {
           borda: bordaScores[candidate],
         };
       }
-      rounds.push(roundData);
+      rounds.push({
+        candidates: roundData,
+        ballots: workingBallots.map(b => [...b])
+      });
 
       const minFirstVotes = Math.min(...remaining.map(c => firstPrefs[c]));
       const toEliminate = remaining.filter(c => firstPrefs[c] === minFirstVotes);

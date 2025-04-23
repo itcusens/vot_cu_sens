@@ -439,3 +439,38 @@ app-vote {
   background-color: #3d503a;
   cursor: default;
 }
+
+.ranking-matrix {
+  margin-top: 20px;
+  color: white;
+}
+
+.matrix-table {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  overflow: auto;
+  margin-bottom: 20px;
+}
+
+.matrix-row {
+  display: flex;
+}
+
+.matrix-header {
+  background-color: #1f2d1f;
+  font-weight: bold;
+  color: #8bc34a;
+}
+
+.matrix-cell {
+  border: 1px solid #576b54;
+  padding: 6px 12px;
+  min-width: 100px;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.matrix-row:nth-child(even):not(.matrix-header) {
+  background-color: #2c3e2b;
+}

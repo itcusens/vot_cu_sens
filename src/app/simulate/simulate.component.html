@@ -165,6 +165,26 @@
     <div class="round-results">
       <p>Round {{ currentRound + 1 }}</p>
 
+      <div class="ranking-matrix">
+        <div class="score-matrix">
+          <div class="matrix-table">
+            <div class="matrix-row matrix-header">
+              <div class="matrix-cell">Candidate / Ballot</div>
+              <div class="matrix-cell" *ngFor="let ballotIndex of getBallotIndexesForRound(currentRound)">
+                Ballot {{ ballotIndex }}
+              </div>
+            </div>
+
+            <div class="matrix-row" *ngFor="let row of getScoreMatrixForRound(currentRound)">
+              <div class="matrix-cell">{{ row.candidate }}</div>
+              <div class="matrix-cell" *ngFor="let score of row.scores">
+                {{ score !== null ? score : '-' }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="results-div-table">
         <div class="results-row results-header">
           <div class="results-cell candidate-name-column">Candidate</div>
