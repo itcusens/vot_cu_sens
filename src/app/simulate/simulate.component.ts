@@ -39,10 +39,11 @@ export class SimulateComponent {
   ballotJumpInput: any;
 
   showConfig: boolean = true;
+  showSimulationResults: boolean = false;
 
   prevBallot() {
     if (this.currentBallotIndex > 0) {
-      this.currentBallotIndex--;
+      this.currentBallotIndex = this.currentBallotIndex - 1;
     }
   }
 
@@ -52,7 +53,7 @@ export class SimulateComponent {
 
   nextBallot() {
     if (this.currentBallotIndex < this.numVoters - 1) {
-      this.currentBallotIndex++;
+      this.currentBallotIndex = this.currentBallotIndex + 1;
     }
   }
 
@@ -73,6 +74,10 @@ export class SimulateComponent {
     this.candidateNames = Array(this.numCandidates).fill('').map((_, i) => `Candidat ${i + 1}`);
   }
 
+  toggleSimulationResults() {
+    this.showSimulationResults = !this.showSimulationResults;
+  }
+
   onCandidateCountChange() {
     const diff = this.numCandidates - this.candidateNames.length;
     if (diff > 0) {
@@ -83,7 +88,6 @@ export class SimulateComponent {
   }
 
   onBallotChange(index: number, ballot: (string | null)[]) {
-    console.log(index, ballot)
     this.manualBallots[index] = ballot;
   }
 
@@ -94,8 +98,8 @@ export class SimulateComponent {
     this.useRandomBallots = false;
     this.simulationResults = [];
     this.winners = [];
-    this.resetCandidateNames();
     this.manualBallots = [];
+    this.resetCandidateNames();
   }
 
   trackByIndex(index: number): number {
@@ -146,6 +150,7 @@ export class SimulateComponent {
     this.numCandidates = candidateNames.length;
     this.numVoters = rawBallots.length;
     this.candidateNames = candidateNames;
+    this.currentBallotIndex = 0;
     this.manualBallots = rawBallots;
   }
 
