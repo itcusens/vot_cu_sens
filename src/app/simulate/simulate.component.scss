@@ -80,6 +80,16 @@
   background-color: #344d34;
   border-radius: 8px;
   color: #ffffff;
+  input {
+    border-radius: 15px;
+    background: #37565B;
+    color: white;
+    font-size: 16px;
+    border: 0;
+    width: 97%;
+    box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 1);
+    padding: 6px;
+  }
 }
 
 .mat-header-cell {

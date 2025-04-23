@@ -1,32 +1,37 @@
-<div class="container">
+<div class="container three-column-layout">
+  <div *ngIf="showPreview" class="candidates-list">
+    <div class="search-container">
+      <input type="text" [(ngModel)]="candidateSearchText" placeholder="Cauta candidati..." />
+    </div>
+    <div class="candidate-card" *ngFor="let candidate of getFilteredCandidates()">
+      <img [src]="candidate.photo" alt="{{candidate.name}}" />
+      <span>{{ candidate.name }}</span>
+    </div>
+  </div>
+
   <div class="main-content">
     <div class="form-container">
-      <div class="buttons-container">
-        <button mat-raised-button color="primary" (click)="resetTable()">Reset</button>
-        <button mat-raised-button color="warn" (click)="voteNullForAll()">Vot nul</button>
-        <button *ngIf="showRandomize" at-raised-button color="primary" (click)="randomizeBallot()">Random</button>
-        <button mat-raised-button color="accent" (click)="fillTheRest()">Random fill rest</button>
-      </div>
-
       <div class="ballot-table-container">
-        <table mat-table [dataSource]="tableData" class="mat-elevation-z8 ballot-table">
-          <ng-container matColumnDef="value">
-            <th mat-header-cell *matHeaderCellDef> Puncte </th>
-            <td mat-cell *matCellDef="let row"> {{ row.value + 1 }} </td>
-          </ng-container>
-
-          <ng-container matColumnDef="select">
-            <th mat-header-cell *matHeaderCellDef> Nume candidat </th>
-            <td mat-cell *matCellDef="let row">
-              <mat-select
+        <table class="ballot-table">
+          <thead>
+            <tr>
+              <th style="width: 100px">Poziție</th>
+              <th>Candidat</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let row of tableData; trackBy: trackByIndex">
+              <td>{{ maxRows - row.value }}</td>
+              <td>
+                <mat-select
                 [ngModel]="selectedNames[row.index]"
                 (ngModelChange)="onNameSelect(row.index, $event)"
-                placeholder="### Alege candidat ###"
+                placeholder="Select name"
                 disableOptionCentering
                 panelClass="custom-select-panel"
               >
                 <mat-optgroup label="">
-                  <div class="search-container">
+                  <div class="candidate-search-container">
                     <input
                       type="text"
                       [(ngModel)]="filterTexts[row.index]"
@@ -44,25 +49,43 @@
                   {{ name }}
                 </mat-option>
               </mat-select>
-            </td>
-          </ng-container>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
-          <tr mat-header-row *matHeaderRowDef="['value', 'select']"></tr>
-          <tr mat-row *matRowDef="let row; columns: ['value', 'select'];"></tr>
+
+      <div class="buttons-container">
+        <button mat-raised-button color="primary" (click)="resetTable()">Reset</button>
+        <button mat-raised-button color="warn" (click)="voteNullForAll()">Anulat</button>
+        <button *ngIf="showRandomize" mat-raised-button color="primary" (click)="randomizeBallot()">Random</button>
+        <button *ngIf="showRandomFill" mat-raised-button color="accent" (click)="fillTheRest()">Random fill rest</button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="showPreview" class="preview-container ballot-preview">
+    <h3>Previzualizare buletin de vot</h3>
+    <div class="preview-print">
+      <div class="paper-sheet">
+        <table class="preview-table">
+          <tr>
+            <th style="width: 20px">Poziție</th>
+            <th>Candidat</th>
+          </tr>
+          <tr *ngFor="let row of getBallotPreview()">
+            <td>{{ maxRows - row.number + 1 }}</td>
+            <td>{{ row.name }}</td>
+          </tr>
         </table>
       </div>
     </div>
-
-    <div class="table-spacing"></div>
-
-    <div class="preview-container" *ngIf="showPreview">
-      <h3>Previzulizare buletin de vot</h3>
-      <table class="preview-table">
-        <tr *ngFor="let row of getBallotPreview()">
-          <td>{{ row.number + 1 }}</td>
-          <td>{{ row.name }}</td>
-        </tr>
-      </table>
+    <div class="qr-placeholder">
+      <qrcode [qrdata]="qrcode" [width]="400" [errorCorrectionLevel]="'M'"></qrcode>
+    </div>
+    <div class="print-button">
+      <button mat-raised-button color="primary" (click)="print()">Print</button>
     </div>
   </div>
 </div>

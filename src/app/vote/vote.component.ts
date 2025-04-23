@@ -1,16 +1,22 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA, EventEmitter, Input, Output, SimpleChanges } from '@angular/core';
-import { MatTableModule } from '@angular/material/table';
 import { MatSelectModule } from '@angular/material/select';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+
+import { QRCodeComponent } from 'angularx-qrcode';
+
+type Candidate = {
+  name: string,
+  photo: string
+}
 
 @Component({
   selector: 'app-vote',
   imports: [
     CommonModule,
-    MatTableModule,
     MatSelectModule,
     FormsModule,
+    QRCodeComponent,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './vote.component.html',
@@ -19,7 +25,8 @@ import { CommonModule } from '@angular/common';
 export class VoteComponent {
   @Input() showPreview: boolean = true;
   @Input() maxRows: number = 30;
-  @Input() showRandomize = false;
+  @Input() showRandomize = true;
+  @Input() showRandomFill = false;
   @Input() allNames: string[] = [
     "John Doe", "Jane Smith", "James Johnson", "Mary Brown", "Robert White",
     "Michael Green", "Patricia Adams", "David Thompson", "Linda Harris", "William Clark",
@@ -30,7 +37,17 @@ export class VoteComponent {
     "Rebecca Walker"
   ];
   @Output() ballotChange = new EventEmitter<(string | null)[]>();
-  NULL_VALUE = 'Null';
+  NULL_VALUE = 'ANULAT';
+
+  candidateSearchText: string = '';
+  candidates:Candidate[] = [{name: 'Vasile Raul', photo: 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png'}];
+  qrcode: string = '';
+
+  getFilteredCandidates() {
+    return this.candidates.filter(candidate =>
+      candidate.name.toLowerCase().includes(this.candidateSearchText.toLowerCase())
+    );
+  }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['maxRows'] && !changes['maxRows'].firstChange) {
@@ -135,9 +152,86 @@ export class VoteComponent {
   }
 
   getBallotPreview() {
-    return this.selectedNames.map((name, index) => ({
+    const ballot = this.selectedNames.map((name, index) => ({
       number: this.maxRows - index,
-      name: name === this.NULL_VALUE ? 'Null Vote' : name,
+      name: name === this.NULL_VALUE ? 'ANULAT' : name,
     }));
+    this.qrcode = JSON.stringify(ballot, null, 2);
+    return ballot;
+  }
+
+  print() {
+    const printContents = document.querySelector('.preview-print')?.innerHTML;
+    const previewElement = document.querySelector('.preview-container');
+    const qrCanvas = previewElement?.querySelector('qrcode canvas') as HTMLCanvasElement;
+
+    if (printContents) {
+      const printWindow = window.open('', '', 'width=800,height=600');
+      const qrDataURL = qrCanvas ? qrCanvas.toDataURL('image/png') : '';
+
+      if (printWindow) {
+        printWindow.document.write(`
+          <html>
+            <title>Buletin vot</title>
+            <head>
+              <style>
+                body {
+                  font-family: 'Arial', sans-serif;
+                  background-color: white;
+                  color: black;
+                  margin: 0;
+                  padding: 20px;
+                }
+                h3 {
+                  color: black;
+                  text-align: center;
+                  margin-bottom: 5px;
+                  font-size: 1.2rem;
+                }
+                table {
+                  width: 100%;
+                  border-collapse: collapse;
+                  font-size: 0.8rem;
+                }
+                th, td {
+                  border: 1px solid #333;
+                  padding: 0px;
+                  text-align: center;
+                }
+                th {
+                  background-color: #e0e0e0;
+                  color: black;
+                }
+                .qr-container {
+                  margin-top: 15px;
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+                }
+                .qr-container img {
+                  width: 400px;
+                  height: 400px;
+                }
+              </style>
+            </head>
+            <body>
+              ${printContents}
+              <div class="qr-container">
+                ${qrDataURL ? `<img src="${qrDataURL}" alt="QR Code" />` : ''}
+              </div>
+              <script>
+                window.onload = function() {
+                  window.print();
+                  window.close();
+                }
+              </script>
+            </body>
+          </html>
+        `);
+        printWindow.document.close();
+      }
+    } else {
+      console.error('Preview container not found.');
+    }
   }
 }
