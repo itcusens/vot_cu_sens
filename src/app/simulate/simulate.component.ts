@@ -38,10 +38,16 @@ export class SimulateComponent {
   currentBallotIndex: number = 0;
   ballotJumpInput: any;
 
+  showConfig: boolean = true;
+
   prevBallot() {
     if (this.currentBallotIndex > 0) {
       this.currentBallotIndex--;
     }
+  }
+
+  toggleConfig() {
+    this.showConfig = !this.showConfig;
   }
 
   nextBallot() {

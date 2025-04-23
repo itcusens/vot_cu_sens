@@ -29,20 +29,75 @@
   background-color: #2c3e2b;
   border-radius: 8px;
   display: flex;
-  gap: 25px;
+  flex-direction: column;
 
   h3 {
     color: #8bc34a;
   }
 
-  .left-container {
-    width: 80%;
+  .top-config {
+    padding: 10px;
+    label {
+      color: #8bc34a;
+      font-size: 24px;
+    }
+    border-radius: 10px;
+    cursor: pointer;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.1);
+    transition: all 1s;
+    &:hover {
+      background: rgba(0, 0, 0, 0.3);
+    }
+
+    &.open {
+      svg {
+        transform: scale(-1, -1);
+      }
+    }
   }
 
-  .right-container {
+  .top-container {
     display: flex;
+    gap: 10px;
+    flex-direction: row;
+  }
+
+  .config {
+    transition: all 1s linear;
+
+    &.hidden {
+      display: none;
+    }
+  }
+
+  .csv-upload {
+    display: flex;
+    color: #ffffff;
+    padding: 10px;
+    border: 2px dashed #8bc34a;
+    border-radius: 15px;
+    gap: 5px;
     flex-direction: column;
-    justify-content: space-between;
+    input[type="file"] {
+      display: none;
+    }
+    .custom-file-upload {
+      width: 120px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      background-color: #000;
+      display: inline-block;
+      padding: 6px 12px;
+      cursor: pointer;
+    }
+    .custom-file-upload:active {
+      border: 1px solid #fff;
+    }
   }
 }
 
@@ -70,6 +125,17 @@
   padding: 16px;
   background-color: #2b3e2a;
   border-radius: 8px;
+}
+
+
+.preview-table {
+  overflow: auto;
+  display: inline-block;
+  max-height: 300px;
+
+  .candidates-column {
+    width: 100%;
+  }
 }
 
 .ballot-table,
