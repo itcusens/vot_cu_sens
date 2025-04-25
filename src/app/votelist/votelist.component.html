@@ -1,0 +1,20 @@
+<div class="vote-wrapper">
+  <div class="header">
+    <p>{{ currentVoteName }}</p>
+
+    <div class="vote-switcher" *ngIf="showNavigation">
+      <button mat-raised-button color="primary" (click)="prevVoteType()">Votul precedent</button>
+      <button mat-raised-button color="primary" (click)="nextVoteType()">Votul urmator</button>
+    </div>
+  </div>
+
+  <hr>
+
+  <app-vote
+    [candidates]="currentCandidates"
+    [allNames]="currentCandidatesNames"
+    [ballot]="currentBallot"
+    [maxRows]="currentMaxRows"
+    (ballotChange)="onBallotChange($event)"
+  ></app-vote>
+</div>

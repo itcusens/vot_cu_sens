@@ -28,6 +28,7 @@ export class VoteComponent {
   @Input() showRandomize = true;
   @Input() showRandomFill = false;
   @Input() ballot: (string | null)[] = [];
+  @Input() candidates:Candidate[] = [{name: 'Vasile Raul', photo: 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png'}];
   @Input() allNames: string[] = [
     "John Doe", "Jane Smith", "James Johnson", "Mary Brown", "Robert White",
     "Michael Green", "Patricia Adams", "David Thompson", "Linda Harris", "William Clark",
@@ -41,7 +42,6 @@ export class VoteComponent {
   NULL_VALUE = 'ANULAT';
 
   candidateSearchText: string = '';
-  candidates:Candidate[] = [{name: 'Vasile Raul', photo: 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png'}];
   qrcode: string = '';
 
   getFilteredCandidates() {
