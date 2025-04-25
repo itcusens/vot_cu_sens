@@ -1,11 +1,47 @@
-<div class="scanner-container">
-  <h2>QR Code Scanner</h2>
-  <video id="videoElement" width="400" height="300"></video>
-  <div class="result" *ngIf="scanResult">
-    <strong>Scanned Result:</strong> {{ scanResult }}
+<div class="qr-scanner-container">
+  <div
+    id="qr-scanner"
+    class="scanner-box"
+    [class.hidden]="scanResult !== null"
+  ></div>
+
+  <div *ngIf="scanResult" class="result-box">
+    <h2>Rezultat scanare:</h2>
+
+    <div class="preview-print">
+      <div class="paper-sheet">
+        <table class="preview-table">
+          <thead>
+            <tr>
+              <th style="width: 20px">Poziție</th>
+              <th>Candidat</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let row of parseScanResult(); index as i">
+              <td>{{ i + 1 }}</td>
+              <td>{{ row.name }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="button-group">
+      <button class="save-btn" (click)="saveResult()">✅ Salvează</button>
+      <button class="rescan-btn" (click)="rescan()">🔄 Rescan</button>
+    </div>
   </div>
-  <div class="error" *ngIf="errorMessage">
+
+  <div class="results-download" *ngIf="results.length > 0">
+    <h3>Rezultate salvate: {{ results.length }}</h3>
+    <button mat-raised-button color="primary" (click)="downloadResultsAsCsv()">
+      📥 Descarcă CSV
+    </button>
+
+  </div>
+
+  <div *ngIf="errorMessage" class="error-message">
     {{ errorMessage }}
   </div>
-  <button (click)="stopScanner()">Stop Scanner</button>
 </div>
