@@ -54,7 +54,7 @@ const candidates = {
     { name: 'PAUTĂ Răzvan', photo: 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png' },
     { name: 'PĂDURARU Roxana', photo: '/assets/Roxana Paduraru.jpg' },
     { name: 'PĂTRU Georgian Andrei', photo: 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png' },
-    { name: 'PREOTEASA-MAIER Cristian-Ștefan', photo: 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png' },
+    { name: 'PREOTEASA-MAIER Cristian-Ștefan', photo: 'assets/Preoteasa.jpg' },
     { name: 'PRESADĂ Florina', photo: '/assets/Florina Presada.jpeg' },
     { name: 'ROMANESCU Claudia Ștefana', photo: '/assets/Claudia Romanescu.jpg' },
     { name: 'SIMIHĂLEANU Liviu Gabriel', photo: '/assets/Liviu Simihaleanu.JPG' },
