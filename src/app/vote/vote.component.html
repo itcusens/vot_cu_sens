@@ -86,7 +86,8 @@
       <qrcode [qrdata]="qrcode" [width]="400" [errorCorrectionLevel]="'M'"></qrcode>
     </div>
     <div class="print-button">
-      <button mat-raised-button color="primary" (click)="print()">Printează</button>
+      <button mat-raised-button color="primary"
+      [disabled]="!isBallotComplete()"  (click)="print()">Printează</button>
     </div>
   </div>
 </div>

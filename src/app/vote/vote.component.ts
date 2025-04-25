@@ -103,6 +103,10 @@ export class VoteComponent {
     this.ballotChange.emit(this.selectedNames);
   }
 
+  isBallotComplete(): boolean {
+    return this.selectedNames.every(name => name && name !== this.NULL_VALUE);
+  }
+
   updateAvailableNames() {
     for (let i = 0; i <= this.maxRows; i++) {
       const used = this.selectedNames
