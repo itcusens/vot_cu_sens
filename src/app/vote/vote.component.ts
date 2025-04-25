@@ -107,6 +107,14 @@ export class VoteComponent {
     return this.selectedNames.every(name => name && name !== this.NULL_VALUE);
   }
 
+  onSelectOpened(opened: boolean, inputElement: HTMLInputElement): void {
+    if (opened) {
+      setTimeout(() => {
+        inputElement.focus();
+      }, 0);
+    }
+  }
+
   updateAvailableNames() {
     for (let i = 0; i <= this.maxRows; i++) {
       const used = this.selectedNames

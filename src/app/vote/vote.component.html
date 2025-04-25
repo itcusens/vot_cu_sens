@@ -29,16 +29,18 @@
                 placeholder="→ Alege candidat ←"
                 disableOptionCentering
                 panelClass="custom-select-panel"
+                (openedChange)="onSelectOpened($event, searchInput)"
               >
                 <mat-optgroup label="">
                   <div class="candidate-search-container">
                     <input
+                      #searchInput
                       type="text"
                       [(ngModel)]="filterTexts[row.index]"
                       (click)="$event.stopPropagation()"
                       (keydown)="$event.stopPropagation()"
                       placeholder="Search..."
-                    />
+                  />
                   </div>
                 </mat-optgroup>
 
