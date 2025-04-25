@@ -173,7 +173,7 @@ export class VoteComponent {
     const qrCanvas = previewElement?.querySelector('qrcode canvas') as HTMLCanvasElement;
 
     if (printContents) {
-      const printWindow = window.open('', '', 'width=800,height=600');
+      const printWindow = window.open('', '', 'width=1100,height=900');
       const qrDataURL = qrCanvas ? qrCanvas.toDataURL('image/png') : '';
 
       if (printWindow) {
@@ -182,50 +182,14 @@ export class VoteComponent {
             <title>Buletin vot</title>
             <head>
               <style>
-                @page {
-                  margin: 0;
-                }
-
-                body {
-                  margin: 2cm;
-                }
-                body {
-                  font-family: 'Arial', sans-serif;
-                  background-color: white;
-                  color: black;
-                  margin: 0;
-                  padding: 20px;
-                }
-                h3 {
-                  color: black;
-                  text-align: center;
-                  margin-bottom: 5px;
-                  font-size: 1.2rem;
-                }
-                table {
-                  width: 100%;
-                  border-collapse: collapse;
-                  font-size: 0.8rem;
-                }
-                th, td {
-                  border: 1px solid #333;
-                  padding: 0px;
-                  text-align: center;
-                }
-                th {
-                  background-color: #e0e0e0;
-                  color: black;
-                }
-                .qr-container {
-                  margin-top: 15px;
-                  display: flex;
-                  justify-content: center;
-                  align-items: center;
-                }
-                .qr-container img {
-                  width: 450px;
-                  height: 450px;
-                }
+                @page { margin: 0; }
+                body { margin: 2cm; font-family: 'Arial', sans-serif; background-color: white; color: black; padding: 20px; }
+                h3 { color: black; text-align: center; margin-bottom: 5px; font-size: 1.2rem; }
+                table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+                th, td { border: 1px solid #333; padding: 0px; text-align: center; }
+                th { background-color: #e0e0e0; color: black; }
+                .qr-container { margin-top: 15px; display: flex; justify-content: center; align-items: center; }
+                .qr-container img { width: 450px; height: 450px; }
               </style>
             </head>
             <body>
@@ -236,6 +200,7 @@ export class VoteComponent {
               <script>
                 window.onload = function() {
                   window.print();
+                  window.opener.postMessage('PRINT_DONE', '*');
                   window.close();
                 }
               </script>
@@ -243,9 +208,20 @@ export class VoteComponent {
           </html>
         `);
         printWindow.document.close();
+
+        const messageHandler = (event: MessageEvent) => {
+          if (event.data === 'PRINT_DONE') {
+            this.resetTable();
+            window.removeEventListener('message', messageHandler);
+          }
+        };
+
+        window.addEventListener('message', messageHandler);
       }
     } else {
       console.error('Preview container not found.');
     }
   }
+
+
 }
