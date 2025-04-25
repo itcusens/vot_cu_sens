@@ -26,7 +26,7 @@
                 <mat-select
                 [ngModel]="selectedNames[row.index]"
                 (ngModelChange)="onNameSelect(row.index, $event)"
-                placeholder="Select name"
+                placeholder="→ Alege candidat ←"
                 disableOptionCentering
                 panelClass="custom-select-panel"
               >
@@ -58,8 +58,8 @@
 
 
       <div class="buttons-container">
-        <button mat-raised-button color="primary" (click)="resetTable()">Resetează</button>
-        <button mat-raised-button color="warn" (click)="voteNullForAll()">Anulat</button>
+        <button class="ResetButton" (click)="resetTable()">Resetează</button>
+        <button class="AnulatButton" mat-raised-button (click)="voteNullForAll()">Anulat</button>
         <button *ngIf="showRandomize" mat-raised-button color="primary" (click)="randomizeBallot()">Random</button>
         <button *ngIf="showRandomFill" mat-raised-button color="accent" (click)="fillTheRest()">Random fill rest</button>
       </div>

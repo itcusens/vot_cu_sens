@@ -88,9 +88,7 @@
   padding: 16px 0;
   border-radius: 8px;
   box-shadow: 0px 4px 3px rgba(0, 0, 0, 0.2);
-  position: sticky;
   bottom: 0;
-  z-index: 999;
 }
 
 button {
@@ -100,23 +98,34 @@ button {
   font-weight: 600;
   border: none;
   cursor: pointer;
-  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+  transition: all 0.2s ease, box-shadow 0.2s ease;
   width: 140px;
-}
 
-button.mat-raised-button.color-primary {
-  background-color: #8bc34a;
-  color: #ffffff;
-}
+  &.ResetButton {
+    background-color: rgba(255,0,0,0.6);
+    color: white;
 
-button.mat-raised-button.color-warn {
-  background-color: #ffab40;
-  color: #ffffff;
-}
+    &:hover {
+      background-color: rgba(255,0,0,1);
+    }
 
-button.mat-raised-button.color-accent {
-  background-color: #76c7a0;
-  color: #ffffff;
+    &:active {
+      background-color: black;
+    }
+  }
+
+  &.AnulatButton {
+    background-color: rgba(255,128,0,0.6);
+    color: white;
+
+    &:hover {
+      background-color: rgba(255,128,0,1);
+    }
+
+    &:active {
+      background-color: black;
+    }
+  }
 }
 
 button:hover {
