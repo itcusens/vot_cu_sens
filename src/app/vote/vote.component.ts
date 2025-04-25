@@ -104,7 +104,7 @@ export class VoteComponent {
   }
 
   isBallotComplete(): boolean {
-    return this.selectedNames.every(name => name && name !== this.NULL_VALUE);
+    return this.selectedNames.every(name => name);
   }
 
   onSelectOpened(opened: boolean, inputElement: HTMLInputElement): void {
