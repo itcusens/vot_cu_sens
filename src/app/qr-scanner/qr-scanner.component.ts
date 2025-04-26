@@ -27,12 +27,22 @@ export class QrScannerComponent implements AfterViewInit, OnDestroy {
     Html5Qrcode.getCameras().then((devices) => {
       if (devices && devices.length) {
         const selectedDeviceId = devices[0].id;
+
+        const config = {
+          fps: 1,
+          qrbox: (viewfinderWidth: number, viewfinderHeight: number) => {
+            const minEdge = Math.min(viewfinderWidth, viewfinderHeight);
+            return { width: minEdge * 0.95, height: minEdge * 0.95 };
+          },
+          videoConstraints: {
+            width: { ideal: 1520 },
+            height: { ideal: 1080 }
+          }
+        };
+
         this.html5QrCode.start(
           selectedDeviceId,
-          {
-            fps: 10,
-            qrbox: { width: 1200, height: 1200 },
-          },
+          config,
           (decodedText) => {
             this.scanResult = decodedText;
             this.stopScanner();

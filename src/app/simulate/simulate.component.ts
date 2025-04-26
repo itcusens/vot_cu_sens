@@ -256,17 +256,16 @@ export class SimulateComponent {
     const rounds: any[] = [];
     let remaining = [...candidates];
     let workingBallots = ballots.map(b => [...b.ballot]);
+    let previousBordaScores: Record<string, number> = {};
 
     function countFirstPreferences(ballots: string[][], remaining: string[]) {
       const counts: Record<string, number> = Object.fromEntries(
         remaining.map(candidate => [candidate, 0])
       );
-
       for (const ballot of ballots) {
         const top = ballot.find(candidate => remaining.includes(candidate));
         if (top) counts[top] += 1;
       }
-
       return counts;
     }
 
@@ -274,22 +273,19 @@ export class SimulateComponent {
       const scores: Record<string, number> = Object.fromEntries(
         remaining.map(candidate => [candidate, 0])
       );
-
       for (const ballot of ballots) {
         const filtered = ballot.filter(candidate => remaining.includes(candidate));
         const n = filtered.length;
-
         filtered.forEach((candidate, index) => {
           scores[candidate] += n - index - 1;
         });
       }
-
       return scores;
     }
 
     while (remaining.length > seats) {
-      const firstPrefs = countFirstPreferences(workingBallots, remaining);
       const bordaScores = calculateBordaScores(workingBallots, remaining);
+      const firstPrefs = countFirstPreferences(workingBallots, remaining);
 
       const roundData: Record<string, { firsts: number; borda: number }> = {};
       for (const candidate of remaining) {
@@ -300,20 +296,33 @@ export class SimulateComponent {
       }
       rounds.push({
         candidates: roundData,
-        ballots: workingBallots.map(b => [...b])
+        ballots: workingBallots.map(b => [...b]),
       });
 
-      const minFirstVotes = Math.min(...remaining.map(c => firstPrefs[c]));
-      const toEliminate = remaining.filter(c => firstPrefs[c] === minFirstVotes);
+      const minBorda = Math.min(...remaining.map(c => bordaScores[c]));
+      const toEliminate = remaining.filter(c => bordaScores[c] === minBorda);
 
       let eliminatedCandidate: string;
       if (toEliminate.length === 1) {
         eliminatedCandidate = toEliminate[0];
       } else {
-        const bordaSubset = toEliminate.map(c => ({ c, borda: bordaScores[c] }));
-        const minBorda = Math.min(...bordaSubset.map(item => item.borda));
-        eliminatedCandidate = bordaSubset.find(item => item.borda === minBorda)!.c;
+        const previousRoundAvailable = Object.keys(previousBordaScores).length > 0;
+        if (previousRoundAvailable) {
+          const previousMax = Math.max(...toEliminate.map(c => previousBordaScores[c] || 0));
+          const previousTop = toEliminate.filter(c => (previousBordaScores[c] || 0) === previousMax);
+          if (previousTop.length === 1) {
+            eliminatedCandidate = previousTop[0];
+          } else {
+            const maxFirstVotes = Math.max(...previousTop.map(c => firstPrefs[c]));
+            eliminatedCandidate = previousTop.find(c => firstPrefs[c] === maxFirstVotes)!;
+          }
+        } else {
+          const maxFirstVotes = Math.max(...toEliminate.map(c => firstPrefs[c]));
+          eliminatedCandidate = toEliminate.find(c => firstPrefs[c] === maxFirstVotes)!;
+        }
       }
+
+      previousBordaScores = bordaScores;
 
       remaining = remaining.filter(c => c !== eliminatedCandidate);
       workingBallots = workingBallots.map(ballot =>

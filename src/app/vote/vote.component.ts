@@ -28,6 +28,7 @@ export class VoteComponent {
   @Input() showRandomize = true;
   @Input() showRandomFill = false;
   @Input() ballot: (string | null)[] = [];
+  @Input() voteType: string = '';
   @Input() candidates:Candidate[] = [{name: 'Vasile Raul', photo: 'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png'}];
   @Input() allNames: string[] = [
     "John Doe", "Jane Smith", "James Johnson", "Mary Brown", "Robert White",
@@ -205,6 +206,7 @@ export class VoteComponent {
               </style>
             </head>
             <body>
+              ${this.voteType}
               ${printContents}
               <div class="qr-container">
                 ${qrDataURL ? `<img src="${qrDataURL}" alt="QR Code" />` : ''}
